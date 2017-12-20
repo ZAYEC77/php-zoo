@@ -2,12 +2,25 @@
 	<head>
 		<link rel="stylesheet" href="/bower_components/reveal.js/css/reveal.css">
 		<link rel="stylesheet" href="/bower_components/reveal.js/css/theme/white.css">
+		<link rel="stylesheet" href="/bower_components/reveal.js/lib/css/zenburn.css">
 		<style>
 			.reveal .sm {
 				font-size: 30px;
 			}
 		</style>
 		<title>PHP ecosystem and best practices</title>
+
+		<!-- Printing and PDF exports -->
+		<script>
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match(/print-pdf/gi) ? '/bower_components/reveal.js/css/print/pdf.css' : '/bower_components/reveal.js/css/print/paper.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+		</script>
+		<!--[if lt IE 9]>
+		<script src="/bower_components/reveal.js/lib/js/html5shiv.js"></script>
+		<![endif]-->
 	</head>
 	<body>
 		<div class="reveal">
@@ -62,14 +75,14 @@
 					<br>
 					<div class="fragment fade-in">
 						<h3>PHP Standards Recommendations</h3>
-						<p>
-							<span class="fragment fade-in">Coding Style</span>
-							<span class="fragment fade-in">Logger</span>
-							<span class="fragment fade-in">Autoloading</span>
-							<span class="fragment fade-in">Caching</span>
-							<span class="fragment fade-in">HTTP Message</span>
-							<span class="fragment fade-in">etc ..</span>
-						</p>
+						<ul>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">Coding Style</li>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">Logger</li>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">Autoloading</li>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">Caching</li>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">HTTP Message</li>
+							<li style="float: left; padding-right: 50px" class="fragment fade-in">etc ..</li>
+						</ul>
 					</div>
 				</section>
 				<section style="text-align: left">
@@ -146,6 +159,7 @@
 						<li class="fragment fade-in">Messengers
 							<ul>
 								<li class="fragment fade-in">Slack</li>
+								<li class="fragment fade-in">Workplace</li>
 								<li class="fragment fade-in">Telegram</li>
 								<li class="fragment fade-in">Discord</li>
 								<li class="fragment fade-in">Hipchat</li>
@@ -167,18 +181,56 @@
 
 				<section style="text-align: left">
 					<h4>Deployment & Infrastructure</h4>
-					<div class="fragment fade-in">
-						<img src="/docker_twitter_share.png"  style="border: none; box-shadow: none">
+					<div class="fragment fade-in" style="float: left; ">
+						<img src="/docker_twitter_share.png" style="border: none; box-shadow: none">
 						<p>
 							<a target="_blank" href="https://www.docker.com/">www.docker.com</a>
 						</p>
+
 					</div>
+					<img src="/docker-compose.png" class="fragment fade-in"
+						 style="float: left; margin-left: 50px; border: none; box-shadow: none; width: 300px;margin-top: -100px;">
+				</section>
+
+				<section style="text-align: left">
+					<h4 style="margin-bottom: 0;">Docker Compose</h4>
+					<img src="/cmp5.png" style="margin: 0; border:none; box-shadow: none;">
+				</section>
+
+				<section style="text-align: left">
+					<h4>Deployment & Infrastructure</h4>
 					<div class="fragment fade-in">
 						<img src="/hashicorp.png" style="border: none; box-shadow: none">
 						<p>
 							<a target="_blank" href="https://www.hashicorp.com/">www.hashicorp.com</a>
 						</p>
 					</div>
+				</section>
+				<section style="text-align: left">
+					<h4 style="margin-bottom: 0;">Vagrantfile</h4>
+					<!--<img src="/vagrant-examples.png" style="margin: 0; border:none; box-shadow: none;">-->
+					<pre style="margin: 0;"><code style="font-size: 16px; width: 100%; min-height: 600px">nodes = [
+  { :hostname => 'ex5web', :ip => '192.168.0.42', :box => 'precise32' },
+  { :hostname => 'ex5db',  :ip => '192.168.0.43', :box => 'precise32', :ram => 512 }
+]
+Vagrant.configure("2") do |config|
+  nodes.each do |node|
+    config.vm.define node[:hostname] do |nodeconfig|
+      nodeconfig.vm.box = "precise32"
+      nodeconfig.vm.hostname = node[:hostname] + ".box"
+      nodeconfig.vm.network :private_network, ip: node[:ip]
+      memory = node[:ram] ? node[:ram] : 256;
+      nodeconfig.vm.provider :virtualbox do |vb|
+        vb.customize [
+          "modifyvm", :id,
+          "--cpuexecutioncap", "50",
+          "--memory", memory.to_s,
+        ]
+      end
+    end
+  end
+end
+					</code></pre>
 				</section>
 				<section style="text-align: left">
 					<h4>Orchestration and configuration</h4>
@@ -277,11 +329,21 @@
 				</section>
 			</div>
 		</div>
+		<script src="/bower_components/reveal.js/lib/js/head.min.js"></script>
 		<script src="/bower_components/reveal.js/js/reveal.js"></script>
 		<script>
 			Reveal.initialize({
 				history: true,
-				slideNumber: 'c/t'
+                slideNumber: 'c/t',
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    {
+                        src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () {
+                            hljs.initHighlightingOnLoad();
+                        }
+                    }
+                ]
 			});
 		</script>
 		<svg style="position:absolute;width:0;height:0;visibility:hidden">
